@@ -16,10 +16,10 @@ var ControlZoomDebug = L.Class.extend({
         this._controlZoom = controlZoom;
     },
     dumpOptions: function() {
-        for (var key in this.options) {
-            console.log(key + " - " + this.options[key]);
+        for (var key in this._controlZoom.options) {
+            console.log(key + " - " + this._controlZoom.options[key]);
         }
-        return Object.keys(this.options).length;
+        return Object.keys(this._controlZoom.options).length;
     }
 });
 
