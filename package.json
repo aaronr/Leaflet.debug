@@ -1,0 +1,32 @@
+{
+  "name": "Leaflet.debug",
+  "version": "0.0.1",
+  "description": "A simple debug plugin for Leaflet",
+  "keywords": [
+    "gis",
+    "leaflet",
+    "map",
+    "debug"
+  ],
+  "homepage": "https://github.com/aaronr/Leaflet.debug",
+  "bugs": "https://github.com/aaronr/Leaflet.debug/issues",
+  "license": "MIT",
+  "author": "Aaron Racicot <aaronr@z-pulley.com>",
+  "main": "src/Leaflet.debug.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aaronr/leaflet.debug.git"
+  },
+  "dependencies": {
+    "leaflet": "0.7.x"
+  },
+  "devDependencies": {
+    "grunt": "0.4.x",
+    "grunt-contrib-clean": "0.5.x",
+    "grunt-contrib-jshint": "0.7.x",
+    "grunt-browserify": "1.2.x",
+    "grunt-contrib-uglify": "0.2.x",
+    "grunt-zip": "0.10.x",
+    "browserify": "2.35.4"
+  }
+}
