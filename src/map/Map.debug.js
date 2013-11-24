@@ -25,5 +25,5 @@ module.exports = function() {
         L.debug.add(this);
         this.debug = new MapDebug(this);
     });
-    return [{className:"L.Map",classRef:L.Map}];
+    return {className:"L.Map",classRef:L.Map};
 };

@@ -30,5 +30,5 @@ module.exports = function() {
         L.debug.add(this);
         this.debug = new ControlZoomDebug(this);
     });
-    return [{className:"L.Control.Zoom",classRef:L.Control.Zoom}];
+    return {className:"L.Control.Zoom",classRef:L.Control.Zoom};
 };

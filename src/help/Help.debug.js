@@ -9,13 +9,15 @@ var Help = L.Class.extend({
         var a = 1+1;
     },
     show: function() {
-        console.log("Help!");
+        var help = "" +
+            "Leaflet.debug... the shizzle for pimping your Leaflet map!\n" +
+            "----------------------------------------------------------\n" +
+            "Maybe some command docs could go here?\n" +
+            "-----------------------------------------------------------\n";
+        return help;
     }
 });
-var help = function () {
-    return new Help();
-};
 
 module.exports = function() {
-    return help();
+    return new Help();
 };
