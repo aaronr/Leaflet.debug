@@ -32,6 +32,13 @@ module.exports = function(grunt) {
         }
       }
     },
+    copy: {
+        main: {
+            files: [
+                {expand: true, src: ['dist/*'], dest: 'example/', filter: 'isFile'}
+            ]
+        }
+    },
     zip: {
       dist: {
         router: function (filepath) {
@@ -51,6 +58,7 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -58,7 +66,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('lint', ['jshint']);
-  grunt.registerTask('build', ['clean', 'browserify', 'uglify']);
+  grunt.registerTask('build', ['clean', 'browserify', 'uglify', 'copy']);
   grunt.registerTask('package', ['build', 'zip']);
   grunt.registerTask('default', ['clean', 'build']);
 
