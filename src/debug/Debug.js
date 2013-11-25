@@ -5,6 +5,29 @@
 */
 'use strict';
 var help = require('../help/Help.debug')();
+
+// Base class for all class debug 
+L.ClassDebug = L.Class.extend({
+    baseinit: function(obj) {
+        this._obj = obj;
+    },
+    toInheritString: function() {
+        var self = this._obj.__name === 'L.Class' ? {} : this._obj.constructor.__super__;
+        //var self = this._obj; // don't overwrite this ref
+        var class_name_lookup = [];
+        if ((typeof this._className !== 'undefined' && 
+             typeof self.__name !== 'undefined') && 
+            (this._className !== self.__name)) {
+            class_name_lookup.push( this._className || "" )
+        }
+        while ( typeof self.__name !== 'undefined' ) {
+            class_name_lookup.push( self.__name || "" );
+            self = self.__name === 'L.Class' ? {} : self.constructor.__super__;
+        }
+        return class_name_lookup.join( ' => ' );
+    }
+});
+
 var Debug = L.Class.extend({
     // The name of the Debug class
     _className: "Debug",
@@ -13,6 +36,13 @@ var Debug = L.Class.extend({
         // Make tracking places for all the types we are wrapping
         for (var i=0;i<modules.length;i++) {
             this._activeInstances.push({n:modules[i].className,c:modules[i].classRef,instances:[]});
+        }
+        // Go ahead and brand all the Leaflet Classes with names so we can 
+        // make call chains for the users...
+        for (var thisClass in L) {
+            if (L[thisClass].hasOwnProperty("prototype")) {
+                L[thisClass].prototype.__name = "L."+thisClass;
+            }
         }
     },
     help: help.show(),

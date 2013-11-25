@@ -6,15 +6,15 @@
 */
 'use strict';
 
-var MapDebug = L.Class.extend({
+var MapDebug = L.ClassDebug.extend({
     // The name of the class being wrapped with a debug
     _className: "L.Map",
-    _map: null,
     initialize: function(map) {
-        this._map = map;
+        this.baseinit(map);
+        this.map = map;
     },
     numLayers: function() {
-        return Object.keys(this._map._layers).length;
+        return Object.keys(this.map._layers).length;
     }
 });
 

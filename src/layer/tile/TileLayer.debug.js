@@ -6,18 +6,18 @@
 */
 'use strict';
 
-var TileLayerDebug = L.Class.extend({
+var TileLayerDebug = L.ClassDebug.extend({
     // The name of the class being wrapped with a debug
     _className: "L.TileLayer",
-    _tileLayer: null,
     initialize: function(tileLayer) {
-        this._tileLayer = tileLayer;
+        this.baseinit(tileLayer);
+        this.tileLayer = tileLayer;
     },
     dumpOptions: function() {
-        for (var key in this._tileLayer.options) {
-            console.log(key + " - " + this._tileLayer.options[key]);
+        for (var key in this.tileLayer.options) {
+            console.log(key + " - " + this.tileLayer.options[key]);
         }
-        return Object.keys(this._tileLayer.options).length;
+        return Object.keys(this.tileLayer.options).length;
     }
 });
 
