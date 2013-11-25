@@ -2,6 +2,9 @@
 
 A simple plugin to use when debugging your Leaflet app.  Adds a .debug to Leaflet classes to make debug tasks simpler. 
 
+## Demo
+
+[http://aaronr.github.io/Leaflet.debug/example/](http://aaronr.github.io/Leaflet.debug/example/)
 
 ## Examples
 
