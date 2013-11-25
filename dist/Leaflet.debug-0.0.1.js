@@ -11,15 +11,22 @@ var debug = require('./debug/Debug')();
 debug.init([
 
 // Lets add in all the different modules we are adding onto
+
+//map
 require('./map/Map.debug')(),
-require('./control/Control.Zoom.debug')()
+
+// control
+require('./control/Control.Zoom.debug')(),
+
+// layer
+require('./layer/tile/TileLayer.debug')()
 
 ]);
 
 L.debug = module.exports = debug;
 
 
-},{"./control/Control.Zoom.debug":2,"./debug/Debug":3,"./map/Map.debug":5}],2:[function(require,module,exports){
+},{"./control/Control.Zoom.debug":2,"./debug/Debug":3,"./layer/tile/TileLayer.debug":5,"./map/Map.debug":6}],2:[function(require,module,exports){
 /*
   Control.Zoom.debug.js
   This is wrapping the L.Control.Zoom class with .debug
@@ -107,7 +114,45 @@ var Debug = L.Class.extend({
             }
             return instanceList;
         }
+    },
+    events: function () {
+        if (arguments.length == 0) {
+            var eventsList = [];
+            for (var i=0;i<this._activeInstances.length;i++) {
+                console.log("++++++++++++++++++");
+                console.log(this._activeInstances[i].n);
+                console.log("------------------");
+                var typeList = {"class":this._activeInstances[i].n,"instances":[]};
+                // Loop through each instance
+                for (var ii=0;ii<this._activeInstances[i].instances.length;ii++) {
+                    // Loop through each event type
+                    var instanceList = {"instance":this._activeInstances[i].instances[ii],"events":[]};
+                    if (this._activeInstances[i].instances[ii].hasOwnProperty("_leaflet_events")) {
+                        for (var key in this._activeInstances[i].instances[ii]._leaflet_events) {
+                            if (/_idx$/.test(key)) {
+                                console.log(key + " - " + 
+                                            this._activeInstances[i].instances[ii]._leaflet_events[key+"_len"]);
+                                instanceList.events.push({"event":key, 
+                                                          "eventRefs":this._activeInstances[i].instances[ii]._leaflet_events[key], 
+                                                          "num":this._activeInstances[i].instances[ii]._leaflet_events[key+"_len"]
+                                                         });
+                            }
+                        }
+                    } else {
+                        console.log("** No events **");
+                    }
+                    if (ii > 0) {
+                        console.log("------------------");
+                    }
+                    typeList.instances.push(instanceList);
+                }
+                eventsList.push(typeList);
+            } 
+            return eventsList;
+        }
+        return "";
     }
+
 });
 
 // This is the generic hook into the testing system 
@@ -143,6 +188,40 @@ module.exports = function() {
 
 },{}],5:[function(require,module,exports){
 /*
+  TileLayer.debug.js
+  This is wrapping the L.TileLayer class with .debug
+
+	(c) 2013, Aaron Racicot, Z-Pulley Inc.
+*/
+'use strict';
+
+var TileLayerDebug = L.Class.extend({
+    // The name of the class being wrapped with a debug
+    _className: "L.TileLayer",
+    _tileLayer: null,
+    initialize: function(tileLayer) {
+        this._tileLayer = tileLayer;
+    },
+    dumpOptions: function() {
+        for (var key in this._tileLayer.options) {
+            console.log(key + " - " + this._tileLayer.options[key]);
+        }
+        return Object.keys(this._tileLayer.options).length;
+    }
+});
+
+// This is the generic hook into the testing system for this 
+// object type.
+module.exports = function() {
+    L.TileLayer.addInitHook(function () {
+        L.debug.add(this);
+        this.debug = new TileLayerDebug(this);
+    });
+    return {className:"L.TileLayer",classRef:L.TileLayer};
+};
+
+},{}],6:[function(require,module,exports){
+/*
   Map.debug.js
   This is wrapping the L.Map class with .debug
 
@@ -172,5 +251,5 @@ module.exports = function() {
     return {className:"L.Map",classRef:L.Map};
 };
 
-},{}]},{},[1,2,3,4,5])
+},{}]},{},[1,2,3,4,5,6])
 ;
