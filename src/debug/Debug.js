@@ -49,7 +49,45 @@ var Debug = L.Class.extend({
             }
             return instanceList;
         }
+    },
+    events: function () {
+        if (arguments.length == 0) {
+            var eventsList = [];
+            for (var i=0;i<this._activeInstances.length;i++) {
+                console.log("++++++++++++++++++");
+                console.log(this._activeInstances[i].n);
+                console.log("------------------");
+                var typeList = {"class":this._activeInstances[i].n,"instances":[]};
+                // Loop through each instance
+                for (var ii=0;ii<this._activeInstances[i].instances.length;ii++) {
+                    // Loop through each event type
+                    var instanceList = {"instance":this._activeInstances[i].instances[ii],"events":[]};
+                    if (this._activeInstances[i].instances[ii].hasOwnProperty("_leaflet_events")) {
+                        for (var key in this._activeInstances[i].instances[ii]._leaflet_events) {
+                            if (/_idx$/.test(key)) {
+                                console.log(key + " - " + 
+                                            this._activeInstances[i].instances[ii]._leaflet_events[key+"_len"]);
+                                instanceList.events.push({"event":key, 
+                                                          "eventRefs":this._activeInstances[i].instances[ii]._leaflet_events[key], 
+                                                          "num":this._activeInstances[i].instances[ii]._leaflet_events[key+"_len"]
+                                                         });
+                            }
+                        }
+                    } else {
+                        console.log("** No events **");
+                    }
+                    if (ii > 0) {
+                        console.log("------------------");
+                    }
+                    typeList.instances.push(instanceList);
+                }
+                eventsList.push(typeList);
+            } 
+            return eventsList;
+        }
+        return "";
     }
+
 });
 
 // This is the generic hook into the testing system 
