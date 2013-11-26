@@ -6,6 +6,9 @@
 */
 'use strict';
 
+// L overrides
+require('./overrides.js');
+
 var debug = require('./debug/Debug')();
 debug.init([
 
