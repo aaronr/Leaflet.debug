@@ -13,8 +13,15 @@ var debug = require('./debug/Debug')();
 debug.init([
 
 // Lets add in all the different modules we are adding onto
+
+//map
 require('./map/Map.debug')(),
-require('./control/Control.Zoom.debug')()
+
+// control
+require('./control/Control.Zoom.debug')(),
+
+// layer
+require('./layer/tile/TileLayer.debug')()
 
 ]);
 

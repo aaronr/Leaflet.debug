@@ -6,20 +6,20 @@
 */
 'use strict';
 
-var ControlZoomDebug = L.Class.extend({
+var ControlZoomDebug = L.ClassDebug.extend({
     // The name of the class being wrapped with a debug
     _className: "L.Control.Zoom",
-    _controlZoom: null,
-    _map: null,
     initialize: function(controlZoom) {
-        this._map = controlZoom._map;
-        this._controlZoom = controlZoom;
+        // Calling the baseinit
+        this.baseinit(controlZoom);
+        this.controlZoom = controlZoom;
+        this.map = controlZoom.map;
     },
     dumpOptions: function() {
-        for (var key in this._controlZoom.options) {
-            console.log(key + " - " + this._controlZoom.options[key]);
+        for (var key in this.controlZoom.options) {
+            console.log(key + " - " + this.controlZoom.options[key]);
         }
-        return Object.keys(this._controlZoom.options).length;
+        return Object.keys(this.controlZoom.options).length;
     }
 });
 
