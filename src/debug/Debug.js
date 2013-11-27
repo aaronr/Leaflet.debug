@@ -7,7 +7,7 @@
 var help = require('../help/Help.debug')();
 
 // Base class for all class debug 
-L.ClassDebug = L.Class.extend({
+L.DebugClass = L.Class.extend({
     baseinit: function(obj) {
         this._obj = obj;
     },
@@ -32,6 +32,24 @@ var Debug = L.Class.extend({
     // The name of the Debug class
     _className: "Debug",
     _activeInstances: [],
+    _tagClasses: function(baseClass) {
+        var baseClassName = baseClass.hasOwnProperty("debug") ? 
+            baseClass.debug.name : "L";
+        for (var thisClass in baseClass) {
+            var shouldWeCare = (/^[A-Z].*/.test(thisClass)) && 
+                ((baseClass === L) || (baseClass[thisClass].hasOwnProperty("__super__") && 
+                                       baseClass.hasOwnProperty("prototype") &&
+                                       (baseClass[thisClass].__super__ === baseClass.prototype)));
+            //if (baseClass[thisClass].hasOwnProperty("prototype") &&
+            //    (/^[A-Z].*/.test(thisClass))) {
+            if (shouldWeCare) {
+                baseClass[thisClass].debug = {name:baseClassName+"."+thisClass};
+                //baseClass[thisClass].prototype.debug = baseClass.prototype.__name__ + "." + thisClass;
+                //L.extend(baseClass[thisClass], {debug:{name:baseClassName+"."+thisClass}});
+                this._tagClasses(baseClass[thisClass]);
+            }
+        }        
+    },
     init: function(modules) {
         // Make tracking places for all the types we are wrapping
         for (var i=0;i<modules.length;i++) {
@@ -39,11 +57,7 @@ var Debug = L.Class.extend({
         }
         // Go ahead and brand all the Leaflet Classes with names so we can 
         // make call chains for the users...
-        for (var thisClass in L) {
-            if (L[thisClass].hasOwnProperty("prototype")) {
-                L[thisClass].prototype.__name = "L."+thisClass;
-            }
-        }
+        this._tagClasses(L);
     },
     help: help.show(),
     // Add method used by all the debug classes to keep track of active instances

@@ -6,7 +6,7 @@
 */
 'use strict';
 
-var ControlZoomDebug = L.ClassDebug.extend({
+var ControlZoomDebug = L.DebugClass.extend({
     // The name of the class being wrapped with a debug
     _className: "L.Control.Zoom",
     initialize: function(controlZoom) {

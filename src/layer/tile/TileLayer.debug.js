@@ -6,7 +6,7 @@
 */
 'use strict';
 
-var TileLayerDebug = L.ClassDebug.extend({
+var TileLayerDebug = L.DebugClass.extend({
     // The name of the class being wrapped with a debug
     _className: "L.TileLayer",
     initialize: function(tileLayer) {

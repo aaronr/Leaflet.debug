@@ -6,7 +6,7 @@
 */
 'use strict';
 
-var MapDebug = L.ClassDebug.extend({
+var MapDebug = L.DebugClass.extend({
     // The name of the class being wrapped with a debug
     _className: "L.Map",
     initialize: function(map) {
