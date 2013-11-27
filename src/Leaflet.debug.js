@@ -10,20 +10,18 @@
 require('./overrides.js');
 
 var debug = require('./debug/Debug')();
-debug.init([
+L.debug = debug;
 
 // Lets add in all the different modules we are adding onto
 
 //map
-require('./map/Map.debug')(),
+require('./map/Map.debug')();
 
 // control
-require('./control/Control.Zoom.debug')(),
+require('./control/Control.Zoom.debug')();
 
 // layer
-require('./layer/tile/TileLayer.debug')()
+require('./layer/tile/TileLayer.debug')();
 
-]);
-
-L.debug = module.exports = debug;
+module.exports = debug;
 
