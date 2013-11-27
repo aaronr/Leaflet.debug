@@ -143,23 +143,28 @@ var Debug = L.Class.extend({
         }
     },
     active: function () {
+        var instanceList = {};
         if (arguments.length == 0) {
             console.log("Class - #Instances");
             console.log("------------------");
             for (var i=0;i<this._activeInstances.length;i++) {
-                console.log(this._activeInstances[i].n + " - " + this._activeInstances[i].instances.length);
-            } 
-            return "";
+                if (this._activeInstances[i].instances.length) {
+                    console.log(this._activeInstances[i].n + " - " + this._activeInstances[i].instances.length);
+                    instanceList[this._activeInstances[i].n] = {"class":this._activeInstances[i].n, 
+                                                                "instances":this._activeInstances[i].instances};
+                } 
+            }
+            return instanceList;
         } else {
             // We have class names and loop through and return the instance
             // refs for those objects
-            var instanceList = [];
             for (var i=0;i<arguments.length;i++) {
                 for (var ii=0;ii<this._activeInstances.length;ii++) {
                     if (arguments[i] === this._activeInstances[ii].n) {
+                        instanceList[arguments[i]] = {"class":arguments[i], 
+                                                      "instances":[]};
                         for (var iii=0;iii<this._activeInstances[ii].instances.length;iii++) {
-                            instanceList.push({"class":arguments[i], 
-                                               "instance":this._activeInstances[ii].instances[iii]});
+                            instanceList[arguments[i]].instances.push(this._activeInstances[ii].instances[iii]);
                         }
                     }
                 }
@@ -188,15 +193,20 @@ var Debug = L.Class.extend({
                                                           "eventRefs":this._activeInstances[i].instances[ii]._leaflet_events[key], 
                                                           "num":this._activeInstances[i].instances[ii]._leaflet_events[key+"_len"]
                                                          });
+                            } else if (!/_len$/.test(key)) {
+                                console.log("Non-standard event found! - " + key);
                             }
                         }
                     } else {
-                        console.log("** No events **");
+                        console.log("** Instance Found - No events list **");
                     }
                     if (ii > 0) {
                         console.log("------------------");
                     }
                     typeList.instances.push(instanceList);
+                }
+                if (ii == 0) {
+                    console.log("** Instance Found - No events in list **");
                 }
                 eventsList.push(typeList);
             } 
