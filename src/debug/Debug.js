@@ -13,19 +13,16 @@ L.DebugClass = L.Class.extend({
         this._obj = classRef;
     },
     toInheritString: function() {
-        var self = this._obj.__name === 'L.Class' ? {} : this._obj.constructor.__super__;
-        //var self = this._obj; // don't overwrite this ref
-        var class_name_lookup = [];
-        if ((typeof this._className !== 'undefined' && 
-             typeof self.__name !== 'undefined') && 
-            (this._className !== self.__name)) {
-            class_name_lookup.push( this._className || "" )
+        var self = this._obj;
+        var classNameLookup = [];
+        classNameLookup.push(this.name);
+        while ( self.__super__.hasOwnProperty("debug") ) {
+            classNameLookup.push(self.__super__.debug.name);
+            self = this._obj.__super__.debug._obj;
         }
-        while ( typeof self.__name !== 'undefined' ) {
-            class_name_lookup.push( self.__name || "" );
-            self = self.__name === 'L.Class' ? {} : self.constructor.__super__;
-        }
-        return class_name_lookup.join( ' => ' );
+        // The last one is an "L.Class"
+        classNameLookup.push("L.Class");
+        return classNameLookup.join( ' => ' );
     }
 });
 
@@ -45,7 +42,7 @@ var Debug = L.Class.extend({
             return;
         }
         for (var thisClass in baseClass) {
-            var shouldWeCare = !(/^Debug.*|^Class.*/.test(thisClass)) && (baseClassName !== "L.Class") &&
+            var shouldWeCare = !(/^Debug.*|^Class.*/.test(thisClass)) &&
                 (/^[A-Z].*/.test(thisClass)) && 
                 (baseClass[thisClass].hasOwnProperty("prototype")) &&
                 ((baseClass === L) || (baseClass[thisClass].hasOwnProperty("__super__") && 
@@ -65,29 +62,27 @@ var Debug = L.Class.extend({
             }
         }        
     },
-    init: function(modules) {
-        // Make tracking places for all the types we are wrapping
-        //for (var i=0;i<modules.length;i++) {
-        //    this._activeInstances.push({n:modules[i].className,c:modules[i].classRef,instances:[]});
-        //}
+    init: function() {
         // Go ahead and brand all the Leaflet Classes with names so we can 
         // make call chains for the users...
         this._tagClasses(L);
+    },
+    extend: function(name, options) {
+        for (var i=0;i<this._activeInstances.length;i++) {
+            if (name === this._activeInstances[i].n) {
+                L.extend(this._activeInstances[i].c.prototype.debug, options);
+            }
+        }        
     },
     help: help.show(),
     // Add method used by all the debug classes to keep track of active instances
     add: function (mysteryClass){
         var name = mysteryClass.debug !== "undefined" ? mysteryClass.debug.name : null;
-        //if (mysteryClass.constructor.hasOwnProperty("debug")) {
-        //    name = mysteryClass.constructor.debug.name;
-        //} else if (mysteryClass.constructor.hasOwnProperty("__super__") &&
-        //           mysteryClass.constructor.__super__.constructor.hasOwnProperty("debug")) {
-        //    name = mysteryClass.constructor.__super__.constructor.debug.name;
-        //}
         if (name) {
             for (var i=0;i<this._activeInstances.length;i++) {
                 if (name === this._activeInstances[i].n) {
                     // Need to push the instance so we can keep track of it
+                    mysteryClass.debug.parent = mysteryClass;
                     this._activeInstances[i].instances.push(mysteryClass);
                 }
             }
@@ -162,6 +157,8 @@ var Debug = L.Class.extend({
 
 // This is the generic hook into the testing system 
 module.exports = function() {
-    return new Debug();
+    var debug = new Debug();
+    debug.init();
+    return debug;
 };
 
