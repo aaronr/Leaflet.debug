@@ -136,15 +136,20 @@ var Debug = L.Class.extend({
                                                           "eventRefs":this._activeInstances[i].instances[ii]._leaflet_events[key], 
                                                           "num":this._activeInstances[i].instances[ii]._leaflet_events[key+"_len"]
                                                          });
+                            } else if (!/_len$/.test(key)) {
+                                console.log("Non-standard event found! - " + key);
                             }
                         }
                     } else {
-                        console.log("** No events **");
+                        console.log("** Instance Found - No events list **");
                     }
                     if (ii > 0) {
                         console.log("------------------");
                     }
                     typeList.instances.push(instanceList);
+                }
+                if (ii == 0) {
+                    console.log("** Instance Found - No events in list **");
                 }
                 eventsList.push(typeList);
             } 
