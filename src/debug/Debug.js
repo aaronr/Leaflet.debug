@@ -8,8 +8,9 @@ var help = require('../help/Help.debug')();
 
 // Base class for all class debug 
 L.DebugClass = L.Class.extend({
-    baseinit: function(obj) {
-        this._obj = obj;
+    initialize: function(name, classRef) {
+        this.name = name;
+        this._obj = classRef;
     },
     toInheritString: function() {
         var self = this._obj.__name === 'L.Class' ? {} : this._obj.constructor.__super__;
@@ -33,18 +34,33 @@ var Debug = L.Class.extend({
     _className: "Debug",
     _activeInstances: [],
     _tagClasses: function(baseClass) {
-        var baseClassName = baseClass.hasOwnProperty("debug") ? 
-            baseClass.debug.name : "L";
+        var baseClassName = null;
+        if (baseClass === L) {
+            baseClassName = "L";
+        } else if (baseClass.hasOwnProperty("prototype") &&
+                   baseClass.prototype.hasOwnProperty("debug")) {
+            baseClassName = baseClass.prototype.debug.name;
+        } else {
+            // If we cant seem to match it up we bail
+            return;
+        }
         for (var thisClass in baseClass) {
-            var shouldWeCare = (/^[A-Z].*/.test(thisClass)) && 
+            var shouldWeCare = !(/^Debug.*|^Class.*/.test(thisClass)) && (baseClassName !== "L.Class") &&
+                (/^[A-Z].*/.test(thisClass)) && 
+                (baseClass[thisClass].hasOwnProperty("prototype")) &&
                 ((baseClass === L) || (baseClass[thisClass].hasOwnProperty("__super__") && 
                                        baseClass.hasOwnProperty("prototype") &&
                                        (baseClass[thisClass].__super__ === baseClass.prototype)));
             if (shouldWeCare) {
-                baseClass[thisClass].debug = {name:baseClassName+"."+thisClass};
-                this._activeInstances.push({n:baseClass[thisClass].debug.name,
+                baseClass[thisClass].prototype.debug = new L.DebugClass(baseClassName+"."+thisClass,baseClass[thisClass]);
+                this._activeInstances.push({n:baseClass[thisClass].prototype.debug.name,
                                             c:baseClass[thisClass],
                                             instances:[]});
+                if (baseClass[thisClass].hasOwnProperty("addInitHook")) {
+                    baseClass[thisClass].addInitHook(function () {
+                        L.debug.add(this);
+                    });
+                }
                 this._tagClasses(baseClass[thisClass]);
             }
         }        
@@ -61,13 +77,13 @@ var Debug = L.Class.extend({
     help: help.show(),
     // Add method used by all the debug classes to keep track of active instances
     add: function (mysteryClass){
-        var name = null;
-        if (mysteryClass.constructor.hasOwnProperty("debug")) {
-            name = mysteryClass.constructor.debug.name;
-        } else if (mysteryClass.constructor.hasOwnProperty("__super__") &&
-                   mysteryClass.constructor.__super__.constructor.hasOwnProperty("debug")) {
-            name = mysteryClass.constructor.__super__.constructor.debug.name;
-        }
+        var name = mysteryClass.debug !== "undefined" ? mysteryClass.debug.name : null;
+        //if (mysteryClass.constructor.hasOwnProperty("debug")) {
+        //    name = mysteryClass.constructor.debug.name;
+        //} else if (mysteryClass.constructor.hasOwnProperty("__super__") &&
+        //           mysteryClass.constructor.__super__.constructor.hasOwnProperty("debug")) {
+        //    name = mysteryClass.constructor.__super__.constructor.debug.name;
+        //}
         if (name) {
             for (var i=0;i<this._activeInstances.length;i++) {
                 if (name === this._activeInstances[i].n) {

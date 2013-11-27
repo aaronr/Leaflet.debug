@@ -26,9 +26,9 @@ var ControlZoomDebug = L.DebugClass.extend({
 // This is the generic hook into the testing system for this 
 // object type.
 module.exports = function() {
-    L.Control.Zoom.addInitHook(function () {
-        L.debug.add(this);
-        this.debug = new ControlZoomDebug(this);
-    });
+    //L.Control.Zoom.addInitHook(function () {
+    //    L.debug.add(this);
+    //    //this.debug = new ControlZoomDebug(this);
+    //});
     return {className:"L.Control.Zoom",classRef:L.Control.Zoom};
 };

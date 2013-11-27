@@ -24,9 +24,9 @@ var TileLayerDebug = L.DebugClass.extend({
 // This is the generic hook into the testing system for this 
 // object type.
 module.exports = function() {
-    L.TileLayer.addInitHook(function () {
-        L.debug.add(this);
-        this.debug = new TileLayerDebug(this);
-    });
+    //L.TileLayer.addInitHook(function () {
+    //    L.debug.add(this);
+    //    //this.debug = new TileLayerDebug(this);
+    //});
     return {className:"L.TileLayer",classRef:L.TileLayer};
 };
