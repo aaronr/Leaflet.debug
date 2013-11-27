@@ -40,21 +40,20 @@ var Debug = L.Class.extend({
                 ((baseClass === L) || (baseClass[thisClass].hasOwnProperty("__super__") && 
                                        baseClass.hasOwnProperty("prototype") &&
                                        (baseClass[thisClass].__super__ === baseClass.prototype)));
-            //if (baseClass[thisClass].hasOwnProperty("prototype") &&
-            //    (/^[A-Z].*/.test(thisClass))) {
             if (shouldWeCare) {
                 baseClass[thisClass].debug = {name:baseClassName+"."+thisClass};
-                //baseClass[thisClass].prototype.debug = baseClass.prototype.__name__ + "." + thisClass;
-                //L.extend(baseClass[thisClass], {debug:{name:baseClassName+"."+thisClass}});
+                this._activeInstances.push({n:baseClass[thisClass].debug.name,
+                                            c:baseClass[thisClass],
+                                            instances:[]});
                 this._tagClasses(baseClass[thisClass]);
             }
         }        
     },
     init: function(modules) {
         // Make tracking places for all the types we are wrapping
-        for (var i=0;i<modules.length;i++) {
-            this._activeInstances.push({n:modules[i].className,c:modules[i].classRef,instances:[]});
-        }
+        //for (var i=0;i<modules.length;i++) {
+        //    this._activeInstances.push({n:modules[i].className,c:modules[i].classRef,instances:[]});
+        //}
         // Go ahead and brand all the Leaflet Classes with names so we can 
         // make call chains for the users...
         this._tagClasses(L);
@@ -62,12 +61,23 @@ var Debug = L.Class.extend({
     help: help.show(),
     // Add method used by all the debug classes to keep track of active instances
     add: function (mysteryClass){
-        for (var i=0;i<this._activeInstances.length;i++) {
-            if (mysteryClass instanceof this._activeInstances[i].c) {
-                // Need to push the instance so we can keep track of it
-                this._activeInstances[i].instances.push(mysteryClass);
+        var name = null;
+        if (mysteryClass.constructor.hasOwnProperty("debug")) {
+            name = mysteryClass.constructor.debug.name;
+        } else if (mysteryClass.constructor.hasOwnProperty("__super__") &&
+                   mysteryClass.constructor.__super__.constructor.hasOwnProperty("debug")) {
+            name = mysteryClass.constructor.__super__.constructor.debug.name;
+        }
+        if (name) {
+            for (var i=0;i<this._activeInstances.length;i++) {
+                if (name === this._activeInstances[i].n) {
+                    // Need to push the instance so we can keep track of it
+                    this._activeInstances[i].instances.push(mysteryClass);
+                }
             }
-        };
+        } else {
+            alert("We have a problem");
+        }
     },
     active: function () {
         if (arguments.length == 0) {
