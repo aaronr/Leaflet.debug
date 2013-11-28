@@ -9,6 +9,7 @@
 // L overrides
 require('./overrides.js');
 
+/*
 var debug = require('./debug/Debug')();
 L.debug = debug;
 
@@ -24,4 +25,5 @@ require('./control/Control.Zoom.debug')();
 require('./layer/tile/TileLayer.debug')();
 
 module.exports = debug;
+*/
 

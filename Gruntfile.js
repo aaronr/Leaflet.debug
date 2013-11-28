@@ -18,7 +18,8 @@ module.exports = function(grunt) {
     },
     browserify: {
       dist: {
-        src: ['src/**/*.js'],
+        //src: ['src/**/*.js'],
+        src: ['src/overrides.js'],
         dest: 'dist/<%= pkg.name%>-<%= pkg.version%>.js'
       }
     },
