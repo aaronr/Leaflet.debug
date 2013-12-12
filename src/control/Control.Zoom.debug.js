@@ -16,7 +16,7 @@ var dumpOptions = function() {
 // This is the generic hook into the testing system for this 
 // object type.
 module.exports = function() {
-    L.debug.extend("L.Control.Zoom",{"myTestVar":"foo",
+    L.debug.extendClass("L.Control.Zoom",{"myTestVar":"foo",
                                      "dumpOptions": dumpOptions
                                     });
     return;

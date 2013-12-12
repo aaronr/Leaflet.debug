@@ -21,13 +21,14 @@
     "leaflet": "0.7.x"
   },
   "devDependencies": {
-    "grunt": "0.4.x",
-    "grunt-contrib-copy": "0.4.x",
-    "grunt-contrib-clean": "0.5.x",
-    "grunt-contrib-jshint": "0.7.x",
-    "grunt-browserify": "1.2.x",
-    "grunt-contrib-uglify": "0.2.x",
-    "grunt-zip": "0.10.x",
-    "browserify": "2.35.4"
+      "grunt": "0.4.x",
+      "grunt-contrib-copy": "0.4.x",
+      "grunt-contrib-clean": "0.5.x",
+      "grunt-contrib-jshint": "0.7.x",
+      "grunt-browserify": "1.2.x",
+      "grunt-contrib-uglify": "0.2.x",
+      "grunt-zip": "0.10.x",
+      "browserify": "2.35.4",
+      "brfs": "0.0.8"
   }
 }
