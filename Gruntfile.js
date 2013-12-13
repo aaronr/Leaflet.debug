@@ -17,10 +17,15 @@ module.exports = function(grunt) {
       files: ['src/**/*.js']
     },
     browserify: {
-      dist: {
-        src: ['src/**/*.js'],
-        dest: 'dist/<%= pkg.name%>-<%= pkg.version%>.js'
-      }
+        dist: {
+            src: ['src/**/*.js'],
+            dest: 'dist/<%= pkg.name%>-<%= pkg.version%>.js'
+        },
+        //require : { jquery : 'jquery-browserify' },
+        options: {
+            transform: ['brfs'],
+            ignore: ['src/**/debug.js','src/**/jquery.min.js']
+        }
     },
     uglify: {
       options: {

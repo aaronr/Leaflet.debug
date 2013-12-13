@@ -4,7 +4,12 @@
 
 */
 'use strict';
+//var $$ = require('jquery-browserify'); 
 var help = require('../help/Help.debug')();
+var fs = require('fs');
+var html = fs.readFileSync(__dirname + '/template/debug.html');
+var js = fs.readFileSync(__dirname + '/template/debug.js');
+var jq = fs.readFileSync(__dirname + '/template/jquery.min.js');
 
 // Base class for all class debug 
 L.DebugClass = L.Class.extend({
@@ -67,7 +72,7 @@ var Debug = L.Class.extend({
         // make call chains for the users...
         this._tagClasses(L);
     },
-    extend: function(name, options) {
+    extendClass: function(name, options) {
         for (var i=0;i<this._activeInstances.length;i++) {
             if (name === this._activeInstances[i].n) {
                 L.extend(this._activeInstances[i].c.prototype.debug, options);
@@ -161,7 +166,36 @@ var Debug = L.Class.extend({
             return eventsList;
         }
         return "";
-    }
+    },
+    mouseMoveTest: function(e) {
+        if (L.debug.debugWindow) {
+            if (L.debug.debugWindow.$("#mousecheck").prop("checked")) {
+                var x = e.latlng.lng.toFixed(6);
+                var y = e.latlng.lat.toFixed(6);
+                L.debug.debugWindow.$(L.debug.debugWindow.document).trigger('mapxy', x+','+y);
+            }
+        }
+    },
+    openDebug: function () {
+        window.onunload = window.onbeforeunload = (function(){
+            if (L.debug.debugWindow) {
+                L.debug.debugWindow.close();
+            }
+        });
+        if (this.debugWindow) {
+            // Clear out any old events etc
+            this.active("L.Map")["L.Map"].instances[0].off('mousemove', this.mouseMoveTest);
+        }
+        var html1 = html.replace('JSTEMPLATE',js);
+        var html2 = html1.replace('JQTEMPLATE',jq);
+        this.debugWindow = window.open("about:blank", "debug", "width=800, height=500, location=no, menubar=no, scrollbars=no, status=no, toolbar=no");
+        this.debugWindow.document.open();
+        this.debugWindow.document.write(html2);
+        this.debugWindow.document.close();
+
+        // Set up a test event to track the mouse
+        this.active("L.Map")["L.Map"].instances[0].on('mousemove', this.mouseMoveTest);
+    } 
 
 });
 

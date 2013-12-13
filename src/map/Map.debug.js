@@ -15,7 +15,7 @@ var numLayers = function() {
 // This is the generic hook into the testing system for this 
 // object type.
 module.exports = function() {
-    L.debug.extend("L.Map",{"myTestVar":"foo",
+    L.debug.extendClass("L.Map",{"myTestVar":"foo",
                             "numLayers": numLayers
                            });
     return;
