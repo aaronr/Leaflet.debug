@@ -169,12 +169,19 @@ var Debug = L.Class.extend({
     },
     mouseMoveTest: function(e) {
         if (L.debug.debugWindow) {
-            var x = e.latlng.lng.toFixed(6);
-            var y = e.latlng.lat.toFixed(6);
-            L.debug.debugWindow.$(L.debug.debugWindow.document).trigger('mapxy', x+','+y);
+            if (L.debug.debugWindow.$("#mousecheck").prop("checked")) {
+                var x = e.latlng.lng.toFixed(6);
+                var y = e.latlng.lat.toFixed(6);
+                L.debug.debugWindow.$(L.debug.debugWindow.document).trigger('mapxy', x+','+y);
+            }
         }
     },
     openDebug: function () {
+        window.onunload = window.onbeforeunload = (function(){
+            if (L.debug.debugWindow) {
+                L.debug.debugWindow.close();
+            }
+        });
         if (this.debugWindow) {
             // Clear out any old events etc
             this.active("L.Map")["L.Map"].instances[0].off('mousemove', this.mouseMoveTest);
